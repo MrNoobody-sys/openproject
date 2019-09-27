@@ -1,35 +1,22 @@
 #!/bin/bash
 clear
-read -p "Server jetzt absichern? (j/n) " response
+read -p "Install OpenProject For Ubuntu 18.04 Now? (y/n) " response
 
-if [ "$response" == "j" ]; then
-# Server Update und Upgrade
+if [ "$response" == "y" ]; then
+# Server Update And Upgrade
     sudo apt update && sudo apt upgrade -y
-# Apticron installieren
-    sudo apt install apticron -y
-echo "Ändern Sie ihre E-Mail Adresse für Apticron \"EMAIL=deine@mailadresse.de\". Weitere mit Enter..."
-    read
-    sudo nano /etc/apticron/apticron.conf
-clear
-echo "Suchen Sie nun PermitRootLogin yes und ändern Sie dieses auf PermitRootLogin no. Weitere mit Enter..."
-    read
-    sudo nano /etc/ssh/sshd_config
-    
-# Google Authenticator installieren
-    sudo apt install libpam-google-authenticator -y
-
-# Google Authenticator starten
-    google-authenticator
-    clear
-echo "Suchen Sie \"@include common-password\" und schreiben Sie da drunter \"auth required pam_google_authenticator.so\". (Bitte lesen Sie die Anleitung auf github) Weitere mit Enter..."
-    read
-    sudo nano /etc/pam.d/sshd
-    clear
-echo "Suchen Sie nun \"ChallangeResponseAuthentication\" und setzen Sie den Wert auf \"yes\". (Bitte lesen Sie die Anleitung auf github) Weitere mit Enter..."
-    read
-    sudo nano /etc/ssh/sshd_config
-    clear
-echo "Ein Reboot wird durchgeführt"
-        sleep 2
+# Import the packager.io repository signing key
+    wget -qO- https://dl.packager.io/srv/opf/openproject/key | sudo apt-key add -    
+# Ensure that universe package source is added
+    sudo add-apt-repository universe
+# Add the OpenProject package source
+    sudo wget -O /etc/apt/sources.list.d/openproject.list \
+  https://dl.packager.io/srv/opf/openproject/stable/10/installer/ubuntu/18.04.repo
+# Install the OpenProject Community Edition package  
+    apt-get update
+    apt-get install openproject
+# run openproject configure
+    sudo openproject configure
+# server reboot
     sudo reboot now
 fi
