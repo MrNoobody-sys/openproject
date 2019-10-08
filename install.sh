@@ -14,7 +14,7 @@ if [ "$response" == "y" ]; then
   https://dl.packager.io/srv/opf/openproject/stable/10/installer/ubuntu/18.04.repo
 # Install the OpenProject Community Edition package  
     apt-get update
-    apt-get install openproject
+    apt-get install openproject -y
 # run openproject configure
     sudo openproject configure
 # server reboot
